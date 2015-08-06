@@ -50,7 +50,6 @@ module Suspenders
       invoke :setup_database
       invoke :create_heroku_apps
       invoke :create_github_repo
-      invoke :setup_segment
       invoke :setup_bundler_audit
       invoke :setup_spring
       invoke :outro
@@ -94,7 +93,6 @@ module Suspenders
       say 'Setting up the test environment'
       build :set_up_factory_girl_for_rspec
       build :generate_factories_file
-      build :set_up_hound
       build :generate_rspec
       build :configure_rspec
       build :configure_background_jobs_for_rspec
