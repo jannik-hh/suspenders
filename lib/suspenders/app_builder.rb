@@ -522,6 +522,21 @@ end
       end
     end
 
+    def setup_basic_auth
+      basic_auth = <<-EOS
+if ENV['BASIC_AUTH_USER'] && ENV['BASIC_AUTH_PASSWORD']
+  config.middleware.use '::Rack::Auth::Basic' do |user, password|
+    [user, password] == [ENV['BASIC_AUTH_USER'], ENV['BASIC_AUTH_PASSWORD']]
+  end
+end
+      EOS
+      inject_into_file(
+        'config/environments/production.rb',
+        basic_auth,
+        after: serve_static_files_line
+      )
+    end
+
     private
 
     def raise_on_missing_translations_in(environment)

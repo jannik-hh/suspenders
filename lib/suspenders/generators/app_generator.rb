@@ -114,6 +114,7 @@ module Suspenders
       build :enable_rack_canonical_host
       build :enable_rack_deflater
       build :setup_asset_host
+      build :setup_basic_auth
     end
 
     def setup_staging_environment
