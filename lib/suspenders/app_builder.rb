@@ -1,9 +1,25 @@
+require "forwardable"
+
 module Suspenders
   class AppBuilder < Rails::AppBuilder
     include Suspenders::Actions
+    extend Forwardable
+
+    def_delegators :heroku_adapter,
+                   :set_heroku_remotes,
+                   :set_up_heroku_specific_gems,
+                   :set_heroku_rails_secrets
 
     def readme
       template 'README.md.erb', 'README.md'
+    end
+
+    def raise_on_missing_assets_in_test
+      inject_into_file(
+        "config/environments/test.rb",
+        "\n  config.assets.raise_runtime_errors = true",
+        after: "Rails.application.configure do",
+      )
     end
 
     def raise_on_delivery_errors
@@ -16,6 +32,23 @@ module Suspenders
         "config/environments/development.rb",
         "\n  config.action_mailer.delivery_method = :test",
         after: "config.action_mailer.raise_delivery_errors = true",
+      )
+    end
+
+    def add_bullet_gem_configuration
+      config = <<-RUBY
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.bullet_logger = true
+    Bullet.rails_logger = true
+  end
+
+      RUBY
+
+      inject_into_file(
+        "config/environments/development.rb",
+        config,
+        after: "config.action_mailer.raise_delivery_errors = true\n",
       )
     end
 
@@ -197,14 +230,6 @@ end
       create_file '.ruby-version', "#{Suspenders::RUBY_VERSION}\n"
     end
 
-    def setup_heroku_specific_gems
-      inject_into_file(
-        "Gemfile",
-        %{\n\s\sgem "rails_stdout_logging"},
-        after: /group :staging, :production do/
-      )
-    end
-
     def enable_database_cleaner
       copy_file 'database_cleaner_rspec.rb', 'spec/support/database_cleaner.rb'
     end
@@ -304,7 +329,7 @@ Rack::Timeout.timeout = (ENV["RACK_TIMEOUT"] || 10).to_i
       copy_file "puma.rb", "config/puma.rb"
     end
 
-    def setup_foreman
+    def set_up_forego
       copy_file 'sample.env', '.sample.env'
       copy_file 'Procfile', 'Procfile'
     end
@@ -369,35 +394,6 @@ Rack::Timeout.timeout = (ENV["RACK_TIMEOUT"] || 10).to_i
       create_production_heroku_app(flags)
     end
 
-    def set_heroku_remotes
-      remotes = <<-SHELL
-
-# Set up the staging and production apps.
-#{join_heroku_app('staging')}
-#{join_heroku_app('production')}
-      SHELL
-
-      append_file 'bin/setup', remotes
-    end
-
-    def join_heroku_app(environment)
-      heroku_app_name = heroku_app_name_for(environment)
-      <<-SHELL
-if heroku join --app #{heroku_app_name} &> /dev/null; then
-  git remote add #{environment} git@heroku.com:#{heroku_app_name}.git || true
-  printf 'You are a collaborator on the "#{heroku_app_name}" Heroku app\n'
-else
-  printf 'Ask for access to the "#{heroku_app_name}" Heroku app\n'
-fi
-      SHELL
-    end
-
-    def set_heroku_rails_secrets
-      %w(staging production).each do |environment|
-        run_heroku "config:add SECRET_KEY_BASE=#{generate_secret}", environment
-      end
-    end
-
     def set_heroku_serve_static_files
       %w(staging production).each do |environment|
         run_heroku "config:add RAILS_SERVE_STATIC_FILES=true", environment
@@ -429,7 +425,6 @@ you can deploy to staging and production with:
         staging:
           branch: master
           commands:
-            - git remote add staging git@heroku.com:#{staging_remote_name}.git
             - bin/deploy staging
       YML
 
@@ -437,8 +432,7 @@ you can deploy to staging and production with:
     end
 
     def create_github_repo(repo_name)
-      path_addition = override_path_for_tests
-      run "#{path_addition} hub create #{repo_name}"
+      run "hub create #{repo_name}"
     end
 
     def setup_segment
@@ -545,20 +539,12 @@ end
       uncomment_lines("config/environments/#{environment}.rb", config)
     end
 
-    def override_path_for_tests
-      if ENV['TESTING']
-        support_bin = File.expand_path(File.join('..', '..', 'spec', 'fakes', 'bin'))
-        "PATH=#{support_bin}:$PATH"
-      end
-    end
-
     def run_heroku(command, environment)
-      path_addition = override_path_for_tests
-      run "#{path_addition} heroku #{command} --remote #{environment}"
+      run "heroku #{command} --remote #{environment}"
     end
 
-    def generate_secret
-      SecureRandom.hex(64)
+    def heroku_adapter
+      @heroku_adapter ||= Adapters::Heroku.new(self)
     end
 
     def serve_static_files_line
