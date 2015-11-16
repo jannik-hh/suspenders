@@ -135,10 +135,26 @@ RSpec.describe "Suspend a new project with default configuration" do
     )
   end
 
+  it "configs bullet gem in development" do
+    test_config = IO.read("#{project_path}/config/environments/development.rb")
+
+    expect(test_config).to match /^ +Bullet.enable = true$/
+    expect(test_config).to match /^ +Bullet.bullet_logger = true$/
+    expect(test_config).to match /^ +Bullet.rails_logger = true$/
+  end
+
+  it "configs missing assets to raise in test" do
+    test_config = IO.read("#{project_path}/config/environments/test.rb")
+
+    expect(test_config).to match(
+      /^ +config.assets.raise_runtime_errors = true$/,
+    )
+  end
+
   it "adds spring to binstubs" do
     expect(File).to exist("#{project_path}/bin/spring")
 
-    spring_line = /^ +load File.expand_path\("\.\.\/spring", __FILE__\)$/
+    spring_line = /^ +load File.expand_path\('\.\.\/spring', __FILE__\)$/
     bin_stubs = %w(rake rails rspec)
     bin_stubs.each do |bin_stub|
       expect(IO.read("#{project_path}/bin/#{bin_stub}")).to match(spring_line)
