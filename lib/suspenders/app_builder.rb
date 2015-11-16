@@ -531,6 +531,16 @@ end
       )
     end
 
+    def add_rubocop_yml_from_webionate_guides
+      open('.rubocop.yml', 'wb') do |file|
+        download_url =
+          'https://raw.githubusercontent.com/webionate/guides/master/style/rubocop/.rubocop.yml'
+        open(download_url) do |uri|
+          file.write(uri.read)
+        end
+      end
+    end
+
     private
 
     def raise_on_missing_translations_in(environment)

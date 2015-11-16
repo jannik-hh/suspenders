@@ -32,6 +32,7 @@ module Suspenders
     def suspenders_customization
       invoke :customize_gemfile
       invoke :setup_development_environment
+      invoke :setup_rubocop
       invoke :setup_test_environment
       invoke :setup_production_environment
       invoke :setup_staging_environment
@@ -234,6 +235,10 @@ module Suspenders
 
     def remove_routes_comment_lines
       build :remove_routes_comment_lines
+    end
+
+    def setup_rubocop
+      build :add_rubocop_yml_from_webionate_guides
     end
 
     def outro

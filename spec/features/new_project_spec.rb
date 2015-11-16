@@ -180,6 +180,10 @@ RSpec.describe "Suspend a new project with default configuration" do
     expect(File).to exist("#{project_path}/spec/factories.rb")
   end
 
+  it "add the rubocop file from the webionate guides repository" do
+    expect(File).to exist("#{project_path}/.rubocop.yml")
+  end
+
   def analytics_partial
     IO.read("#{project_path}/app/views/application/_analytics.html.erb")
   end
