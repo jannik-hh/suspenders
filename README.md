@@ -31,6 +31,7 @@ It includes application gems like:
   processing
 * [Flutie](https://github.com/thoughtbot/flutie) for `page_title` and `body_class` view
   helpers
+* [Font Awesome](https://github.com/bokmann/font-awesome-rails) a collection of Icons
 * [High Voltage](https://github.com/thoughtbot/high_voltage) for static pages
 * [jQuery Rails](https://github.com/rails/jquery-rails) for jQuery
 * [Neat](https://github.com/thoughtbot/neat) for semantic grids
