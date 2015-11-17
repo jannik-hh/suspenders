@@ -41,6 +41,7 @@ It includes application gems like:
   ensure all requests are served from the same domain
 * [Rack Timeout](https://github.com/kch/rack-timeout) to abort requests that are
   taking too long
+* [Ransack](https://github.com/activerecord-hackery/ransack) for object-based searching
 * [Recipient Interceptor](https://github.com/croaky/recipient_interceptor) to
   avoid accidentally sending emails to real people from staging
 * [Refills](https://github.com/thoughtbot/refills) for “copy-paste” components
