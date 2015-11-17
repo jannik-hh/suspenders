@@ -536,6 +536,10 @@ end
       end
     end
 
+    def convert_to_haml
+      run "rake haml:replace_erbs"
+    end
+
     private
 
     def raise_on_missing_translations_in(environment)

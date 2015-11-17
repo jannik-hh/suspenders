@@ -136,6 +136,7 @@ module Suspenders
       build :create_shared_flashes
       build :create_shared_javascripts
       build :create_application_layout
+      build :convert_to_haml
     end
 
     def configure_app
