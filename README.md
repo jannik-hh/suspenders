@@ -34,6 +34,7 @@ It includes application gems like:
 * [Font Awesome](https://github.com/bokmann/font-awesome-rails) a collection of Icons
 * [High Voltage](https://github.com/thoughtbot/high_voltage) for static pages
 * [jQuery Rails](https://github.com/rails/jquery-rails) for jQuery
+* [Kaminari](https://github.com/amatsuda/kaminari) to paginate lists
 * [Neat](https://github.com/thoughtbot/neat) for semantic grids
 * [New Relic RPM](https://github.com/newrelic/rpm) for monitoring performance
 * [Normalize](https://necolas.github.io/normalize.css/) for resetting browser styles
