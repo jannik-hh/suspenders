@@ -1,15 +1,13 @@
-# Suspenders [![Build Status](https://secure.travis-ci.org/thoughtbot/suspenders.svg?branch=master)](http://travis-ci.org/thoughtbot/suspenders)
+# Suspenders (webionate fork)
 
-Suspenders is the base Rails application used at
-[thoughtbot](http://thoughtbot.com).
-
-  ![Suspenders boy](http://media.tumblr.com/1TEAMALpseh5xzf0Jt6bcwSMo1_400.png)
+Suspenders is the base Rails application used at [thoughtbot](http://thoughtbot.com).
+This is a fork of the webionate team.
 
 ## Installation
 
-First install the suspenders gem:
+First checkout this repository. Go into the suspenders directory and put the /bin to your path.
 
-    gem install suspenders
+    PATH=$(pwd)/bin:$PATH
 
 Then run:
 
@@ -98,9 +96,7 @@ Suspenders also comes with:
 * An automatically-created `SECRET_KEY_BASE` environment variable in all
   environments
 * Configuration for [CircleCI][circle] Continuous Integration (tests)
-* Configuration for [Hound][hound] Continuous Integration (style)
-* The analytics adapter [Segment][segment] (and therefore config for Google
-  Analytics, Intercom, Facebook Ads, Twitter Ads, etc.)
+* The latest .rubocop.yml from the webionate style guide
 
 [setup]: http://robots.thoughtbot.com/bin-setup
 [compress]: http://robots.thoughtbot.com/content-compression-with-rack-deflater/
@@ -108,8 +104,6 @@ Suspenders also comes with:
 [binstub]: https://github.com/thoughtbot/suspenders/pull/282
 [i18n]: https://github.com/thoughtbot/suspenders/pull/304
 [circle]: https://circleci.com/docs
-[hound]: https://houndci.com
-[segment]: https://segment.com
 
 ## Heroku
 
